@@ -98,39 +98,66 @@
         // URL de votre Web App Google Apps Script.
         const sheetApiUrl = 'https://script.google.com/macros/s/AKfycbwiIMBI0_u0BMmbhVeYNIfzccpZq1pTsg2a2qFUiQJyQJlsrWXW99pn0fJ0hQ4Al95Z/exec';
 
-        // Fonction pour récupérer les données et mettre à jour le badge.
         function updateBadge() {
-            // AJOUT: On ajoute un paramètre unique à l'URL pour éviter la mise en cache
+            // On ajoute un paramètre unique pour forcer la récupération des nouvelles données
             const urlToFetch = `${sheetApiUrl}?cachebust=${new Date().getTime()}`;
+            console.log(`Tentative de récupération des données depuis : ${urlToFetch}`);
 
-            fetch(urlToFetch)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('La réponse du réseau n\'était pas bonne');
+            fetch(urlToFetch, {
+                method: 'GET',
+                mode: 'cors', // Spécifie le mode CORS
+                redirect: 'follow' // Suit les redirections
+            })
+            .then(response => {
+                console.log('Réponse reçue du serveur. Statut:', response.status);
+                if (!response.ok) {
+                    throw new Error(`Erreur réseau, statut : ${response.status}`);
+                }
+                // Google Apps Script peut renvoyer une réponse qui n'est pas directement du JSON.
+                // Nous clonons la réponse pour essayer de la lire en JSON, et en texte si cela échoue.
+                return response.clone().json().catch(() => response.text());
+            })
+            .then(data => {
+                console.log('Données reçues:', data);
+                let bikeData;
+
+                // Si la donnée est une chaîne de caractères, on essaie de la parser en JSON
+                if (typeof data === 'string') {
+                    try {
+                        bikeData = JSON.parse(data);
+                    } catch (e) {
+                        throw new Error('Impossible de parser la réponse texte en JSON.');
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    const bikeCountElement = document.getElementById('bike-count');
-                    const bikeLabelElement = document.getElementById('bike-label');
+                } else {
+                    bikeData = data;
+                }
+                
+                const bikeCountElement = document.getElementById('bike-count');
+                const bikeLabelElement = document.getElementById('bike-label');
+                
+                if (bikeCountElement && bikeData && bikeData.count !== undefined) {
+                    const count = parseInt(bikeData.count, 10);
+                    if (isNaN(count)) {
+                        throw new Error('La valeur reçue n\'est pas un nombre.');
+                    }
+                    console.log(`Mise à jour du compteur avec la valeur : ${count}`);
+                    bikeCountElement.textContent = count;
                     
-                    if (bikeCountElement && data.count !== undefined) {
-                        const count = parseInt(data.count, 10);
-                        bikeCountElement.textContent = count;
-                        // Mettre le texte au pluriel si nécessaire
-                        if (bikeLabelElement) {
-                            bikeLabelElement.textContent = count > 1 ? 'VÉLOS FINANCÉS' : 'VÉLO FINANCÉ';
-                        }
+                    if (bikeLabelElement) {
+                        bikeLabelElement.textContent = count > 1 ? 'VÉLOS FINANCÉS' : 'VÉLO FINANCÉ';
                     }
-                })
-                .catch(error => {
-                    console.error('Erreur lors de la récupération des données:', error);
-                    // Affiche un '?' en cas d'erreur pour indiquer un problème.
-                    const bikeCountElement = document.getElementById('bike-count');
-                    if (bikeCountElement) {
-                        bikeCountElement.textContent = '?';
-                    }
-                });
+                } else {
+                    throw new Error('Les données reçues sont invalides ou le compteur est manquant.');
+                }
+            })
+            .catch(error => {
+                console.error('--- ERREUR DÉTAILLÉE ---');
+                console.error('Une erreur est survenue lors de la mise à jour du badge:', error);
+                const bikeCountElement = document.getElementById('bike-count');
+                if (bikeCountElement) {
+                    bikeCountElement.textContent = 'X'; // Affiche 'X' pour une erreur claire
+                }
+            });
         }
 
         // Appelle la fonction au chargement de la page.
