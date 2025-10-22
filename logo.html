@@ -96,12 +96,14 @@
 
     <script>
         // URL de votre Web App Google Apps Script.
-        // Remplacez la valeur ci-dessous par l'URL que vous avez copiée depuis Google.
         const sheetApiUrl = 'https://script.google.com/macros/s/AKfycbwiIMBI0_u0BMmbhVeYNIfzccpZq1pTsg2a2qFUiQJyQJlsrWXW99pn0fJ0hQ4Al95Z/exec';
 
         // Fonction pour récupérer les données et mettre à jour le badge.
         function updateBadge() {
-            fetch(sheetApiUrl)
+            // AJOUT: On ajoute un paramètre unique à l'URL pour éviter la mise en cache
+            const urlToFetch = `${sheetApiUrl}?cachebust=${new Date().getTime()}`;
+
+            fetch(urlToFetch)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('La réponse du réseau n\'était pas bonne');
