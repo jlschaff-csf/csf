@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge Donateur - Vélo Financé</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .badge-container {
+            width: 300px;
+            height: 300px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="badge-container">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Définition du motif texturé jaune -->
+            <defs>
+                <pattern id="yellowTexture" patternUnits="userSpaceOnUse" width="10" height="10">
+                    <image href="https://www.transparenttextures.com/patterns/fabric-of-squares.png" x="0" y="0" width="10" height="10" />
+                     <rect width="10" height="10" fill="#FFC425" opacity="0.95"/>
+                </pattern>
+                <!-- Chemin pour le texte courbé -->
+                <path id="curveTop" d="M 10,50 A 40,40 0 1,1 90,50" fill="none"/>
+            </defs>
+
+            <!-- Cercle de fond avec la texture -->
+            <circle cx="50" cy="50" r="49" fill="url(#yellowTexture)"/>
+            <circle cx="50" cy="50" r="49" fill="none" stroke="#333" stroke-width="1"/>
+
+            <!-- Vélo (déplacé vers le bas) -->
+            <g id="baobike-v4" transform="translate(21, 40) scale(0.6)">
+                <g stroke="black" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Cadre avec tube supérieur -->
+                    <path d="M28,45 L48,45 L58,25" />
+                    <path d="M48,45 L66,45" />
+                    <path d="M41,28 L28,45" />
+                    <path d="M41,28 L58,25" /> 
+                    
+                    <!-- Selle -->
+                    <path d="M38,28 L41,28" />
+                    <path d="M39.5,28 L39.5,25 L34.5,25 L34.5,28 Z" fill="black" />
+
+                    <!-- Guidon -->
+                    <path d="M58,25 L63,20 L68,20" />
+
+                    <!-- Pédalier -->
+                    <circle cx="48" cy="45" r="4" />
+
+                    <!-- Roues avec rayons corrigés -->
+                    <circle cx="28" cy="45" r="12"/>
+                    <path d="M28 34 L 28 56 M17 45 L 39 45 M20.5 36.5 L 35.5 53.5 M20.5 53.5 L 35.5 36.5" />
+                    <circle cx="66" cy="45" r="12"/>
+                    <path d="M66 34 L 66 56 M55 45 L 77 45 M58.5 36.5 L 73.5 53.5 M58.5 53.5 L 73.5 36.5" />
+                </g>
+            </g>
+            
+            <!-- Texte du haut -->
+            <text font-size="6.5" font-weight="bold" fill="black" letter-spacing="0.1">
+                <textPath href="#curveTop" startOffset="50%" text-anchor="middle">
+                    MERCI POUR LEUR AVENIR
+                </textPath>
+            </text>
+
+            <!-- Texte du compteur (taille réduite et déplacé vers le haut) -->
+            <text font-size="18" font-weight="900" fill="black" text-anchor="middle" x="50" y="50">
+                1
+            </text>
+            <text font-size="5.5" font-weight="700" fill="black" text-anchor="middle" x="50" y="90" letter-spacing="0.1">
+                VÉLO FINANCÉ
+            </text>
+
+            <!-- Logo BSF -->
+            <g transform="translate(50, 22) scale(0.20)">
+                 <text text-anchor="middle" font-family="Montserrat, sans-serif" fill="black">
+                    <tspan x="0" dy="0" font-size="28" font-weight="900">BSF</tspan>
+                    <tspan x="0" dy="12" font-size="8" font-weight="400" letter-spacing="0.1">BICICLETAS SIN FRONTERAS</tspan>
+                </text>
+            </g>
+
+        </svg>
+    </div>
+
+</body>
+</html>
+
